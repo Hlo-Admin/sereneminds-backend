@@ -37,9 +37,11 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://sereneminds-frontend.vercel.app",
+      "https://serenminds.vercel.app",
     ],
-    methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
+    methods: ["GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 app.use(express.json());
