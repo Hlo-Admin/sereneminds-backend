@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const schoolAuthRoutes = require("./routes/schoolAuthRoutes");
+const studentAuthRoutes = require("./routes/studentAuthRoutes");
 const branchRoutes = require("./routes/branchRoutes");
 const schoolRoutes = require("./routes/schoolRoutes");
 const boardRoutes = require("./routes/boardRoutes");
@@ -53,6 +54,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/school-auth", schoolAuthRoutes);
+app.use("/api/student-auth", studentAuthRoutes);
 app.use("/api/branches", branchRoutes);
 app.use("/api/schools", schoolRoutes);
 app.use("/api/boards", boardRoutes);

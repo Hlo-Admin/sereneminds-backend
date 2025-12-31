@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { Student } = require("../models");
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
-// Middleware to verify JWT token
-const authenticateToken = async (req, res, next) => {
+// Middleware to verify JWT token for students
+const authenticateStudentToken = async (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
@@ -19,17 +19,17 @@ const authenticateToken = async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Check if it's a master admin token (should not have type field or type should not be 'school' or 'student')
-    if (decoded.type && decoded.type !== "admin" && decoded.type !== "user") {
+    // Check if it's a student token
+    if (decoded.type !== "student") {
       return res.status(403).json({
         success: false,
-        message: "Invalid token type. Master admin authentication required.",
+        message: "Invalid token type. Student authentication required.",
       });
     }
 
-    // Check if user still exists and is active
-    const user = await User.findByPk(decoded.userId);
-    if (!user || !user.isActive) {
+    // Check if student still exists and is active
+    const student = await Student.findByPk(decoded.userId);
+    if (!student || student.status !== "active") {
       return res.status(401).json({
         success: false,
         message: "Invalid or expired token",
@@ -38,6 +38,7 @@ const authenticateToken = async (req, res, next) => {
 
     // Add user info to request
     req.user = decoded;
+    req.student = student;
     next();
   } catch (error) {
     console.error("Token verification error:", error);
@@ -48,18 +49,7 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
-// Middleware to check if user is admin
-const requireAdmin = (req, res, next) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({
-      success: false,
-      message: "Admin access required",
-    });
-  }
-  next();
+module.exports = {
+  authenticateStudentToken,
 };
 
-module.exports = {
-  authenticateToken,
-  requireAdmin,
-};

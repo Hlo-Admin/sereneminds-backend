@@ -36,6 +36,7 @@ const register = async (req, res) => {
         userId: user.id,
         email: user.email,
         role: user.role,
+        type: user.role === "admin" ? "admin" : "user",
       },
       JWT_SECRET,
       { expiresIn: "24h" }
@@ -101,6 +102,7 @@ const login = async (req, res) => {
         userId: user.id,
         email: user.email,
         role: user.role,
+        type: user.role === "admin" ? "admin" : "user",
       },
       JWT_SECRET,
       { expiresIn: "24h" }
